@@ -1,1758 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Maison Noir — Luxury Real Estate</title>
-<meta name="description" content="Maison Noir is a boutique luxury real estate agency representing the world's most exceptional homes, estates, and city residences." />
-
-<!-- ============================================================
-     DESIGN SUMMARY
-     - Aesthetic: Minimalist luxury — whites, charcoals, gold accent
-     - Typography: Playfair Display (headings) + Inter (body)
-     - Layout: CSS Grid + Flexbox, mobile-first responsive
-     - Colors via CSS custom properties (see :root below)
-     - Performance: lazy-loading images, semantic HTML, no JS frameworks
-     - Property data: inline JSON (window.PROPERTIES)
-     ============================================================ -->
-
-<!-- Google Fonts: Playfair Display + Inter -->
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-
-<style>
-/* ============================================================
-   DESIGN SYSTEM — CSS Custom Properties
-   ============================================================ */
-:root {
-  /* Whites */
-  --white: #FFFFFF;
-  --off-white: #F8F9FA;
-  --cream: #FAF8F4;
-
-  /* Charcoals */
-  --charcoal: #2D3436;
-  --charcoal-soft: #3D4548;
-  --slate: #636E72;
-  --slate-light: #B2BEC3;
-
-  /* Accent — Gold */
-  --gold: #C5A059;
-  --gold-light: #D4B976;
-  --gold-dark: #A8853E;
-
-  /* Neutrals */
-  --border: #E8E8E8;
-  --border-dark: #D5D8DC;
-  --shadow-sm: 0 2px 8px rgba(45, 52, 54, 0.06);
-  --shadow-md: 0 8px 30px rgba(45, 52, 54, 0.10);
-  --shadow-lg: 0 20px 60px rgba(45, 52, 54, 0.15);
-
-  /* Typography */
-  --font-heading: 'Playfair Display', Georgia, serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-
-  /* Spacing */
-  --space-xs: 0.5rem;
-  --space-sm: 1rem;
-  --space-md: 2rem;
-  --space-lg: 4rem;
-  --space-xl: 6rem;
-  --space-2xl: 8rem;
-
-  /* Layout */
-  --container: 1280px;
-  --radius: 4px;
-  --radius-lg: 8px;
-  --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-/* ============================================================
-   RESET & BASE
-   ============================================================ */
-*, *::before, *::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 80px;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  font-family: var(--font-body);
-  font-weight: 400;
-  color: var(--charcoal);
-  background: var(--white);
-  line-height: 1.6;
-  overflow-x: hidden;
-}
-
-img {
-  max-width: 100%;
-  display: block;
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
-}
-
-ul {
-  list-style: none;
-}
-
-button {
-  font-family: inherit;
-  cursor: pointer;
-  border: none;
-  background: none;
-}
-
-h1, h2, h3, h4 {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-}
-
-/* ============================================================
-   UTILITY CLASSES
-   ============================================================ */
-.container {
-  width: 100%;
-  max-width: var(--container);
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-.section-label {
-  display: inline-block;
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 1rem;
-}
-
-.section-title {
-  font-size: clamp(2rem, 4vw, 3rem);
-  color: var(--charcoal);
-  margin-bottom: 1rem;
-}
-
-.section-subtitle {
-  font-size: 1.05rem;
-  color: var(--slate);
-  max-width: 600px;
-  line-height: 1.7;
-}
-
-/* Buttons */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.9rem 2rem;
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  border-radius: var(--radius);
-  transition: all var(--transition);
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.btn-primary {
-  background: var(--gold);
-  color: var(--white);
-  border: 1px solid var(--gold);
-}
-
-.btn-primary:hover {
-  background: var(--gold-dark);
-  border-color: var(--gold-dark);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.btn-outline {
-  background: transparent;
-  color: var(--white);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-}
-
-.btn-outline:hover {
-  background: var(--white);
-  color: var(--charcoal);
-  border-color: var(--white);
-}
-
-.btn-dark {
-  background: var(--charcoal);
-  color: var(--white);
-  border: 1px solid var(--charcoal);
-}
-
-.btn-dark:hover {
-  background: var(--gold);
-  border-color: var(--gold);
-}
-
-.btn-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--gold);
-  transition: gap var(--transition);
-}
-
-.btn-link:hover {
-  gap: 1rem;
-}
-
-.btn-link::after {
-  content: '→';
-  font-size: 1rem;
-}
-
-/* ============================================================
-   NAVIGATION — Fixed top bar
-   ============================================================ */
-.nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-  padding: 1.25rem 0;
-  transition: all var(--transition);
-  background: transparent;
-}
-
-.nav.scrolled {
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  padding: 0.75rem 0;
-  box-shadow: var(--shadow-sm);
-}
-
-.nav-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  max-width: var(--container);
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-.nav-logo {
-  font-family: var(--font-heading);
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  color: var(--white);
-  transition: color var(--transition);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.nav-logo span {
-  color: var(--gold);
-}
-
-.nav.scrolled .nav-logo {
-  color: var(--charcoal);
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 2.5rem;
-}
-
-.nav-links a {
-  font-size: 0.85rem;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  color: rgba(255, 255, 255, 0.9);
-  transition: color var(--transition);
-  position: relative;
-}
-
-.nav-links a:not(.nav-cta)::after {
-  content: '';
-  position: absolute;
-  bottom: -6px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--gold);
-  transition: width var(--transition);
-}
-
-.nav-links a:not(.nav-cta):hover::after {
-  width: 100%;
-}
-
-.nav.scrolled .nav-links a:not(.nav-cta) {
-  color: var(--charcoal);
-}
-
-.nav.scrolled .nav-links a:not(.nav-cta):hover {
-  color: var(--gold);
-}
-
-.nav-cta {
-  padding: 0.6rem 1.5rem;
-  background: var(--gold);
-  color: var(--white) !important;
-  border-radius: var(--radius);
-  font-weight: 600;
-  transition: all var(--transition);
-}
-
-.nav-cta:hover {
-  background: var(--gold-dark);
-  transform: translateY(-1px);
-}
-
-/* Mobile menu toggle */
-.nav-toggle {
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  z-index: 1001;
-}
-
-.nav-toggle span {
-  width: 26px;
-  height: 2px;
-  background: var(--white);
-  transition: all var(--transition);
-}
-
-.nav.scrolled .nav-toggle span {
-  background: var(--charcoal);
-}
-
-.nav-toggle.active span:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
-  background: var(--charcoal);
-}
-
-.nav-toggle.active span:nth-child(2) {
-  opacity: 0;
-}
-
-.nav-toggle.active span:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
-  background: var(--charcoal);
-}
-
-/* ============================================================
-   HERO SECTION — Full viewport with overlay
-   ============================================================ */
-.hero {
-  position: relative;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  overflow: hidden;
-  background: var(--charcoal);
-}
-
-.hero-bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 1;
-  animation: heroZoom 20s ease-in-out infinite alternate;
-}
-
-@keyframes heroZoom {
-  from { transform: scale(1); }
-  to { transform: scale(1.08); }
-}
-
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  background: linear-gradient(
-    180deg,
-    rgba(45, 52, 54, 0.5) 0%,
-    rgba(45, 52, 54, 0.4) 50%,
-    rgba(45, 52, 54, 0.7) 100%
-  );
-}
-
-.hero-content {
-  position: relative;
-  z-index: 3;
-  max-width: 800px;
-  padding: 0 1.5rem;
-  animation: heroFadeIn 1.2s ease-out;
-}
-
-@keyframes heroFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.hero-label {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--gold-light);
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--gold);
-}
-
-.hero h1 {
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
-  font-weight: 500;
-  color: var(--white);
-  margin-bottom: 1.5rem;
-  line-height: 1.1;
-}
-
-.hero h1 em {
-  font-style: italic;
-  color: var(--gold-light);
-}
-
-.hero p {
-  font-size: clamp(1rem, 2vw, 1.25rem);
-  color: rgba(255, 255, 255, 0.85);
-  max-width: 580px;
-  margin: 0 auto 2.5rem;
-  line-height: 1.7;
-  font-weight: 300;
-}
-
-.hero-ctas {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.hero-scroll {
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  animation: scrollBounce 2s ease-in-out infinite;
-}
-
-@keyframes scrollBounce {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(8px); }
-}
-
-.hero-scroll-line {
-  width: 1px;
-  height: 40px;
-  background: linear-gradient(to bottom, var(--gold), transparent);
-}
-
-/* ============================================================
-   PROPERTY LISTINGS SECTION
-   ============================================================ */
-.listings {
-  padding: var(--space-2xl) 0;
-  background: var(--off-white);
-}
-
-.listings-header {
-  text-align: center;
-  margin-bottom: var(--space-lg);
-}
-
-.listings-header .section-subtitle {
-  margin: 0 auto;
-}
-
-/* Category filter tabs */
-.filter-tabs {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-bottom: var(--space-lg);
-  flex-wrap: wrap;
-}
-
-.filter-tab {
-  padding: 0.7rem 1.5rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--slate);
-  background: transparent;
-  border: 1px solid var(--border-dark);
-  border-radius: var(--radius);
-  transition: all var(--transition);
-}
-
-.filter-tab:hover {
-  color: var(--charcoal);
-  border-color: var(--charcoal);
-}
-
-.filter-tab.active {
-  background: var(--charcoal);
-  color: var(--white);
-  border-color: var(--charcoal);
-}
-
-.filter-tab .count {
-  display: inline-block;
-  margin-left: 0.4rem;
-  font-size: 0.7rem;
-  opacity: 0.6;
-}
-
-/* Property grid */
-.property-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-}
-
-/* Card */
-.property-card {
-  background: var(--white);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  transition: all var(--transition);
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-}
-
-.property-card:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-lg);
-}
-
-.property-image {
-  position: relative;
-  width: 100%;
-  height: 260px;
-  overflow: hidden;
-  background: var(--cream);
-}
-
-.property-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s ease;
-}
-
-.property-card:hover .property-image img {
-  transform: scale(1.06);
-}
-
-.property-badge {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  padding: 0.35rem 0.9rem;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(4px);
-  border-radius: var(--radius);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--charcoal);
-}
-
-.property-badge.featured {
-  background: var(--gold);
-  color: var(--white);
-}
-
-.property-favorite {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  width: 38px;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(4px);
-  border-radius: 50%;
-  transition: all var(--transition);
-  font-size: 1rem;
-}
-
-.property-favorite:hover {
-  background: var(--gold);
-  color: var(--white);
-}
-
-.property-favorite.active {
-  background: var(--gold);
-  color: var(--white);
-}
-
-.property-body {
-  padding: 1.5rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.property-price {
-  font-family: var(--font-heading);
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--charcoal);
-  margin-bottom: 0.25rem;
-}
-
-.property-title {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--slate);
-  margin-bottom: 1rem;
-}
-
-.property-meta {
-  display: flex;
-  gap: 1.5rem;
-  padding-top: 1rem;
-  margin-top: auto;
-  border-top: 1px solid var(--border);
-}
-
-.property-meta-item {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.85rem;
-  color: var(--slate);
-}
-
-.property-meta-item strong {
-  color: var(--charcoal);
-  font-weight: 600;
-}
-
-.property-meta-icon {
-  width: 16px;
-  height: 16px;
-  color: var(--gold);
-}
-
-.listings-cta {
-  text-align: center;
-  margin-top: var(--space-lg);
-}
-
-/* ============================================================
-   ABOUT SECTION — Two-column layout
-   ============================================================ */
-.about {
-  padding: var(--space-2xl) 0;
-  background: var(--white);
-}
-
-.about-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-lg);
-  align-items: center;
-}
-
-.about-image-wrap {
-  position: relative;
-}
-
-.about-image {
-  width: 100%;
-  height: 500px;
-  object-fit: cover;
-  border-radius: var(--radius-lg);
-}
-
-.about-image-accent {
-  position: absolute;
-  bottom: -20px;
-  right: -20px;
-  width: 120px;
-  height: 120px;
-  border: 2px solid var(--gold);
-  border-radius: var(--radius-lg);
-  z-index: -1;
-}
-
-.about-stats {
-  position: absolute;
-  bottom: 30px;
-  left: -30px;
-  background: var(--white);
-  padding: 1.5rem 2rem;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  text-align: center;
-}
-
-.about-stats .number {
-  font-family: var(--font-heading);
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--gold);
-  line-height: 1;
-}
-
-.about-stats .label {
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--slate);
-  margin-top: 0.25rem;
-}
-
-.about-content .section-title {
-  margin-bottom: 1.5rem;
-}
-
-.about-content p {
-  color: var(--slate);
-  line-height: 1.8;
-  margin-bottom: 1.25rem;
-  font-size: 1.02rem;
-}
-
-.about-features {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin: 2rem 0;
-}
-
-.about-feature {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-}
-
-.about-feature-icon {
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--cream);
-  border-radius: 50%;
-  color: var(--gold);
-}
-
-.about-feature-text h4 {
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--charcoal);
-  margin-bottom: 0.2rem;
-}
-
-.about-feature-text p {
-  font-size: 0.82rem;
-  color: var(--slate);
-  margin: 0;
-  line-height: 1.5;
-}
-
-/* ============================================================
-   CONTACT / CTA SECTION
-   ============================================================ */
-.contact {
-  padding: var(--space-2xl) 0;
-  background: var(--charcoal);
-  color: var(--white);
-  position: relative;
-  overflow: hidden;
-}
-
-.contact::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(135deg, transparent 0%, rgba(197, 160, 89, 0.08) 100%);
-}
-
-.contact-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-lg);
-  align-items: center;
-  position: relative;
-  z-index: 1;
-}
-
-.contact-content .section-label {
-  color: var(--gold-light);
-}
-
-.contact-content h2 {
-  font-size: clamp(2rem, 4vw, 3rem);
-  color: var(--white);
-  margin-bottom: 1.5rem;
-}
-
-.contact-content p {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 1.05rem;
-  line-height: 1.8;
-  max-width: 500px;
-  margin-bottom: 2rem;
-}
-
-.contact-info {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.contact-info-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.contact-info-icon {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(197, 160, 89, 0.15);
-  border-radius: 50%;
-  color: var(--gold);
-  flex-shrink: 0;
-}
-
-.contact-info-text .label {
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 0.2rem;
-}
-
-.contact-info-text .value {
-  font-size: 1rem;
-  color: var(--white);
-  font-weight: 500;
-}
-
-/* Contact form */
-.contact-form {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-lg);
-  padding: 2.5rem;
-}
-
-.form-group {
-  margin-bottom: 1.25rem;
-}
-
-.form-group label {
-  display: block;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 0.5rem;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select {
-  width: 100%;
-  padding: 0.85rem 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: var(--radius);
-  color: var(--white);
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  transition: all var(--transition);
-}
-
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-  color: rgba(255, 255, 255, 0.3);
-}
-
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-  outline: none;
-  border-color: var(--gold);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.form-group textarea {
-  resize: vertical;
-  min-height: 100px;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.contact-form .btn {
-  width: 100%;
-}
-
-/* ============================================================
-   FOOTER
-   ============================================================ */
-.footer {
-  background: #1A1F20;
-  color: rgba(255, 255, 255, 0.6);
-  padding: var(--space-lg) 0 2rem;
-}
-
-.footer-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2.5rem;
-  margin-bottom: var(--space-lg);
-  padding-bottom: var(--space-lg);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.footer-brand .nav-logo {
-  color: var(--white);
-  margin-bottom: 1rem;
-}
-
-.footer-brand p {
-  font-size: 0.9rem;
-  line-height: 1.7;
-  max-width: 300px;
-}
-
-.footer-col h4 {
-  font-family: var(--font-body);
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--white);
-  margin-bottom: 1.25rem;
-}
-
-.footer-col ul li {
-  margin-bottom: 0.75rem;
-}
-
-.footer-col ul li a {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.6);
-  transition: color var(--transition);
-}
-
-.footer-col ul li a:hover {
-  color: var(--gold);
-}
-
-.footer-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.footer-bottom p {
-  font-size: 0.85rem;
-}
-
-.footer-social {
-  display: flex;
-  gap: 1rem;
-}
-
-.footer-social a {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 50%;
-  color: rgba(255, 255, 255, 0.6);
-  transition: all var(--transition);
-}
-
-.footer-social a:hover {
-  background: var(--gold);
-  border-color: var(--gold);
-  color: var(--white);
-}
-
-/* ============================================================
-   SCROLL REVEAL ANIMATION
-   ============================================================ */
-.reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-}
-
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ============================================================
-   RESPONSIVE — Media Queries
-   ============================================================ */
-
-/* Tablet — 2 column grid */
-@media (min-width: 768px) {
-  .property-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .about-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-xl);
-  }
-
-  .about-features {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .contact-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-xl);
-  }
-
-  .footer-grid {
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-  }
-}
-
-/* Desktop — 3 column grid */
-@media (min-width: 1024px) {
-  .property-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* Mobile navigation */
-@media (max-width: 768px) {
-  .nav-links {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 80%;
-    max-width: 320px;
-    height: 100vh;
-    background: var(--white);
-    flex-direction: column;
-    justify-content: center;
-    gap: 2rem;
-    padding: 2rem;
-    transition: right var(--transition);
-    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.1);
-  }
-
-  .nav-links.active {
-    right: 0;
-  }
-
-  .nav-links a:not(.nav-cta) {
-    color: var(--charcoal);
-    font-size: 1.1rem;
-  }
-
-  .nav-cta {
-    width: 100%;
-    text-align: center;
-    padding: 1rem;
-  }
-
-  .nav-toggle {
-    display: flex;
-  }
-
-  .hero-ctas {
-    flex-direction: column;
-    width: 100%;
-    max-width: 280px;
-    margin: 0 auto;
-  }
-
-  .hero-ctas .btn {
-    width: 100%;
-  }
-
-  .about-stats {
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: -40px;
-  }
-
-  .about-image-accent {
-    display: none;
-  }
-
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-
-  .contact-form {
-    padding: 1.75rem;
-  }
-
-  .footer-bottom {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .property-meta {
-    flex-wrap: wrap;
-    gap: 0.75rem;
-  }
-
-  .about-features {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inkwell — Insights That Inspire</title>
+    <meta name="description" content="A blog for curious minds. Expert opinions, weekly deep dives, and free resources on tech, design, and innovation.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-<!-- ============================================================
-     NAVIGATION
-     ============================================================ -->
-<nav class="nav" id="nav">
-  <div class="nav-inner">
-    <a href="#home" class="nav-logo">Maison<span>Noir</span></a>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#listings">Listings</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#contact" class="nav-cta">Contact</a></li>
-    </ul>
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-  </div>
-</nav>
-
-<!-- ============================================================
-     HERO SECTION
-     ============================================================ -->
-<section class="hero" id="home">
-  <img class="hero-bg" src="https://picsum.photos/seed/luxury-estate-hero/1920/1080" alt="Luxury estate exterior" loading="eager" />
-  <div class="hero-overlay"></div>
-  <div class="hero-content">
-    <span class="hero-label">Boutique Luxury Real Estate</span>
-    <h1>Find Your <em>Dream Home</em></h1>
-    <p>Discover an exclusive collection of the world's most extraordinary residences — curated for those who expect nothing less than exceptional.</p>
-    <div class="hero-ctas">
-      <a href="#listings" class="btn btn-primary">View Listings</a>
-      <a href="#contact" class="btn btn-outline">Contact</a>
-    </div>
-  </div>
-  <div class="hero-scroll">
-    <span>Scroll</span>
-    <div class="hero-scroll-line"></div>
-  </div>
-</section>
-
-<!-- ============================================================
-     PROPERTY LISTINGS GRID
-     ============================================================ -->
-<section class="listings" id="listings">
-  <div class="container">
-    <div class="listings-header reveal">
-      <span class="section-label">Featured Properties</span>
-      <h2 class="section-title">Exceptional Homes, Curated</h2>
-      <p class="section-subtitle">Each residence in our portfolio is hand-selected for its architectural distinction, prime location, and uncompromising quality.</p>
-    </div>
-
-    <!-- Category filter tabs -->
-    <div class="filter-tabs reveal" id="filterTabs">
-      <button class="filter-tab active" data-filter="all">All <span class="count"></span></button>
-      <button class="filter-tab" data-filter="Luxury Villas">Luxury Villas</button>
-      <button class="filter-tab" data-filter="City Apartments">City Apartments</button>
-      <button class="filter-tab" data-filter="Estates">Estates</button>
-    </div>
-
-    <!-- Property cards injected by JS -->
-    <div class="property-grid" id="propertyGrid"></div>
-
-    <div class="listings-cta">
-      <a href="#contact" class="btn btn-dark">Request Private Viewing</a>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     ABOUT SECTION
-     ============================================================ -->
-<section class="about" id="about">
-  <div class="container">
-    <div class="about-grid">
-      <div class="about-image-wrap reveal">
-        <img class="about-image" src="https://picsum.photos/seed/agency-interior/800/600" alt="Maison Noir agency interior" loading="lazy" />
-        <div class="about-image-accent"></div>
-        <div class="about-stats">
-          <div class="number">25+</div>
-          <div class="label">Years Experience</div>
+    <!-- ===== NAVIGATION ===== -->
+    <nav class="nav" id="navbar">
+        <div class="nav__container">
+            <a href="#" class="nav__logo">Inkwell<span class="nav__logo-dot">.</span></a>
+            <ul class="nav__links" id="navLinks">
+                <li><a href="#features" class="nav__link">Features</a></li>
+                <li><a href="#posts" class="nav__link">Articles</a></li>
+                <li><a href="#testimonials" class="nav__link">Testimonials</a></li>
+                <li><a href="#subscribe" class="nav__link nav__link--cta">Subscribe</a></li>
+            </ul>
+            <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
         </div>
-      </div>
-      <div class="about-content reveal">
-        <span class="section-label">About Maison Noir</span>
-        <h2 class="section-title">A Legacy of Trust & Distinction</h2>
-        <p>For over two decades, Maison Noir has represented the world's most discerning buyers and sellers. Our boutique approach means every client receives the undivided attention of senior agents who understand that a home is more than an address — it is a statement.</p>
-        <p>We combine deep market intelligence with an unwavering commitment to discretion, ensuring that every transaction is executed with precision and confidentiality.</p>
+    </nav>
 
-        <div class="about-features">
-          <div class="about-feature">
-            <div class="about-feature-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L4 7v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V7l-8-5z"/></svg>
+    <!-- ===== HERO SECTION ===== -->
+    <header class="hero" id="hero">
+        <div class="hero__container">
+            <div class="hero__badge">
+                <span class="hero__badge-dot"></span> New issue every Sunday
             </div>
-            <div class="about-feature-text">
-              <h4>Trusted Expertise</h4>
-              <p>Senior agents with decades of experience.</p>
+            <h1 class="hero__title">Insights That <span class="hero__title-em">Inspire</span></h1>
+            <p class="hero__subtitle">
+                Deep dives into tech, design, and innovation — written by practitioners who live and breathe the craft. No fluff, no hot takes, just thoughtful analysis delivered to your inbox every week.
+            </p>
+            <div class="hero__actions">
+                <a href="#subscribe" class="btn btn--primary">
+                    Subscribe Free
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+                <a href="#posts" class="btn btn--secondary">
+                    Read Latest
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                </a>
             </div>
-          </div>
-          <div class="about-feature">
-            <div class="about-feature-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <div class="hero__stats">
+                <div class="hero__stat">
+                    <span class="hero__stat-number">12k+</span>
+                    <span class="hero__stat-label">Subscribers</span>
+                </div>
+                <div class="hero__stat">
+                    <span class="hero__stat-number">200+</span>
+                    <span class="hero__stat-label">Articles</span>
+                </div>
+                <div class="hero__stat">
+                    <span class="hero__stat-number">4.9</span>
+                    <span class="hero__stat-label">Rating</span>
+                </div>
             </div>
-            <div class="about-feature-text">
-              <h4>24/7 Concierge</h4>
-              <p>Dedicated support at every step.</p>
-            </div>
-          </div>
-          <div class="about-feature">
-            <div class="about-feature-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg>
-            </div>
-            <div class="about-feature-text">
-              <h4>Global Network</h4>
-              <p>Properties across 30+ countries.</p>
-            </div>
-          </div>
-          <div class="about-feature">
-            <div class="about-feature-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
-            </div>
-            <div class="about-feature-text">
-              <h4>Verified Listings</h4>
-              <p>Every property thoroughly vetted.</p>
-            </div>
-          </div>
         </div>
-
-        <a href="#contact" class="btn-link">Learn More</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     CONTACT SECTION
-     ============================================================ -->
-<section class="contact" id="contact">
-  <div class="container">
-    <div class="contact-grid">
-      <div class="contact-content reveal">
-        <span class="section-label">Get In Touch</span>
-        <h2>Begin Your Journey Home</h2>
-        <p>Whether you are searching for a private retreat or preparing to list a distinguished property, our team is ready to provide the guidance you deserve.</p>
-
-        <div class="contact-info">
-          <div class="contact-info-item">
-            <div class="contact-info-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-            </div>
-            <div class="contact-info-text">
-              <div class="label">Call Us</div>
-              <div class="value">+1 (310) 555-0199</div>
-            </div>
-          </div>
-          <div class="contact-info-item">
-            <div class="contact-info-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            </div>
-            <div class="contact-info-text">
-              <div class="label">Email Us</div>
-              <div class="value">concierge@maisonnoir.com</div>
-            </div>
-          </div>
-          <div class="contact-info-item">
-            <div class="contact-info-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            </div>
-            <div class="contact-info-text">
-              <div class="label">Visit Us</div>
-              <div class="value">9200 Sunset Blvd, Beverly Hills, CA</div>
-            </div>
-          </div>
+        <div class="hero__visual">
+            <div class="hero__shape hero__shape--1"></div>
+            <div class="hero__shape hero__shape--2"></div>
+            <div class="hero__shape hero__shape--3"></div>
         </div>
-      </div>
+    </header>
 
-      <form class="contact-form reveal" id="contactForm">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="name">Full Name</label>
-            <input type="text" id="name" name="name" placeholder="John Carter" required />
-          </div>
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="john@email.com" required />
-          </div>
+    <!-- ===== VALUE PROPOSITION ===== -->
+    <section class="features" id="features">
+        <div class="features__container">
+            <div class="section-header">
+                <span class="section-header__tag">Why Inkwell</span>
+                <h2 class="section-header__title">A blog worth your attention</h2>
+                <p class="section-header__subtitle">In a world of infinite content, we focus on what matters.</p>
+            </div>
+            <div class="features__grid">
+                <div class="feature-card">
+                    <div class="feature-card__icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <h3 class="feature-card__title">Expert Voices</h3>
+                    <p class="feature-card__desc">Every article is written or reviewed by industry practitioners with real-world experience — not AI-generated filler.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    </div>
+                    <h3 class="feature-card__title">Weekly Cadence</h3>
+                    <p class="feature-card__desc">A fresh deep-dive every Sunday morning. Consistent, reliable, and always worth the read with your coffee.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    </div>
+                    <h3 class="feature-card__title">Signal Over Noise</h3>
+                    <p class="feature-card__desc">We curate and synthesize so you don't have to. One thoughtful piece beats ten clickbait headlines.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    </div>
+                    <h3 class="feature-card__title">100% Free Forever</h3>
+                    <p class="feature-card__desc">No paywalls, no premium tiers. We believe great ideas should be accessible to everyone, always.</p>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-          <label for="phone">Phone</label>
-          <input type="tel" id="phone" name="phone" placeholder="+1 (000) 000-0000" />
+    </section>
+
+    <!-- ===== FEATURED POSTS ===== -->
+    <section class="posts" id="posts">
+        <div class="posts__container">
+            <div class="section-header">
+                <span class="section-header__tag">Latest Articles</span>
+                <h2 class="section-header__title">What we've been thinking about</h2>
+                <p class="section-header__subtitle">Our most popular pieces from the past few weeks.</p>
+            </div>
+            <div class="posts__grid">
+                <article class="post-card">
+                    <div class="post-card__image">
+                        <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=340&fit=crop&auto=format" alt="Code on a dark screen" loading="lazy">
+                        <span class="post-card__tag">Engineering</span>
+                    </div>
+                    <div class="post-card__body">
+                        <time class="post-card__date" datetime="2025-01-12">Jan 12, 2025</time>
+                        <h3 class="post-card__title">Why Rust Is Eating the Backend, One Crate at a Time</h3>
+                        <p class="post-card__excerpt">Memory safety without a garbage collector isn't just a nice-to-have — it's reshaping how we think about server-side performance.</p>
+                        <a href="#" class="post-card__link">Read More <span aria-hidden="true">→</span></a>
+                    </div>
+                </article>
+                <article class="post-card">
+                    <div class="post-card__image">
+                        <img src="https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=600&h=340&fit=crop&auto=format" alt="Design sketches on a desk" loading="lazy">
+                        <span class="post-card__tag post-card__tag--design">Design</span>
+                    </div>
+                    <div class="post-card__body">
+                        <time class="post-card__date" datetime="2025-01-05">Jan 5, 2025</time>
+                        <h3 class="post-card__title">The Quiet Death of Skeuomorphism — And Why It Might Return</h3>
+                        <p class="post-card__excerpt">Flat design won the last decade. But as spatial computing arrives, the old metaphors are starting to make sense again.</p>
+                        <a href="#" class="post-card__link">Read More <span aria-hidden="true">→</span></a>
+                    </div>
+                </article>
+                <article class="post-card">
+                    <div class="post-card__image">
+                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=340&fit=crop&auto=format" alt="Circuit board close-up" loading="lazy">
+                        <span class="post-card__tag post-card__tag--ai">AI &amp; ML</span>
+                    </div>
+                    <div class="post-card__body">
+                        <time class="post-card__date" datetime="2024-12-29">Dec 29, 2024</time>
+                        <h3 class="post-card__title">Local LLMs in 2025: Running GPT-4 Class Models on a Laptop</h3>
+                        <p class="post-card__excerpt">Quantization, distillation, and open-weight models are closing the gap faster than anyone predicted. Here's what's actually usable today.</p>
+                        <a href="#" class="post-card__link">Read More <span aria-hidden="true">→</span></a>
+                    </div>
+                </article>
+            </div>
         </div>
-        <div class="form-group">
-          <label for="interest">I'm interested in</label>
-          <select id="interest" name="interest">
-            <option value="">Select an option</option>
-            <option value="buying">Buying a property</option>
-            <option value="selling">Selling a property</option>
-            <option value="viewing">Private viewing</option>
-            <option value="consultation">Market consultation</option>
-          </select>
+    </section>
+
+    <!-- ===== TESTIMONIALS / SOCIAL PROOF ===== -->
+    <section class="testimonials" id="testimonials">
+        <div class="testimonials__container">
+            <div class="section-header">
+                <span class="section-header__tag">Testimonials</span>
+                <h2 class="section-header__title">Loved by readers</h2>
+                <p class="section-header__subtitle">Join thousands who start their Sunday with Inkwell.</p>
+            </div>
+            <div class="testimonials__carousel" id="testimonialCarousel">
+                <div class="testimonial-card testimonial-card--active" data-index="0">
+                    <div class="testimonial-card__stars">★★★★★</div>
+                    <blockquote class="testimonial-card__quote">
+                        "Finally, a tech blog that respects my time. Every article is dense with insight — I actually save them for reference. The Sunday newsletter is the only one I consistently open."
+                    </blockquote>
+                    <div class="testimonial-card__author">
+                        <div class="testimonial-card__avatar">SM</div>
+                        <div>
+                            <strong class="testimonial-card__name">Sarah Mitchell</strong>
+                            <span class="testimonial-card__role">Senior Engineer at Vercel</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card" data-index="1">
+                    <div class="testimonial-card__stars">★★★★★</div>
+                    <blockquote class="testimonial-card__quote">
+                        "I've unsubscribed from everything except Inkwell. The curation is phenomenal — it's like having a smart friend who reads everything and tells you only what matters."
+                    </blockquote>
+                    <div class="testimonial-card__author">
+                        <div class="testimonial-card__avatar">RK</div>
+                        <div>
+                            <strong class="testimonial-card__name">Ravi Krishnan</strong>
+                            <span class="testimonial-card__role">Product Designer at Stripe</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card" data-index="2">
+                    <div class="testimonial-card__stars">★★★★★</div>
+                    <blockquote class="testimonial-card__quote">
+                        "The Rust article changed how our team thinks about backend architecture. We've since migrated two services. That's real impact from a free blog post."
+                    </blockquote>
+                    <div class="testimonial-card__author">
+                        <div class="testimonial-card__avatar">JL</div>
+                        <div>
+                            <strong class="testimonial-card__name">Julia Lindström</strong>
+                            <span class="testimonial-card__role">CTO at Finch</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonials__controls">
+                <button class="testimonials__dot testimonials__dot--active" data-slide="0" aria-label="Testimonial 1"></button>
+                <button class="testimonials__dot" data-slide="1" aria-label="Testimonial 2"></button>
+                <button class="testimonials__dot" data-slide="2" aria-label="Testimonial 3"></button>
+            </div>
+            <div class="testimonials__logos">
+                <span class="testimonials__logos-label">Trusted by readers from</span>
+                <div class="testimonials__logos-row">
+                    <span class="testimonials__logo">Vercel</span>
+                    <span class="testimonials__logo">Stripe</span>
+                    <span class="testimonials__logo">Figma</span>
+                    <span class="testimonials__logo">GitHub</span>
+                    <span class="testimonials__logo">Notion</span>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-          <label for="message">Message</label>
-          <textarea id="message" name="message" placeholder="Tell us about your dream home..."></textarea>
+    </section>
+
+    <!-- ===== EMAIL CAPTURE ===== -->
+    <section class="subscribe" id="subscribe">
+        <div class="subscribe__container">
+            <div class="subscribe__card">
+                <div class="subscribe__content">
+                    <span class="section-header__tag section-header__tag--light">Newsletter</span>
+                    <h2 class="subscribe__title">Get the next issue in your inbox</h2>
+                    <p class="subscribe__desc">Every Sunday morning. One article. Zero spam. Unsubscribe anytime.</p>
+                    <form class="subscribe__form" id="subscribeForm">
+                        <div class="subscribe__field">
+                            <input type="text" id="subName" placeholder="Your name" required aria-label="Your name">
+                        </div>
+                        <div class="subscribe__field">
+                            <input type="email" id="subEmail" placeholder="you@example.com" required aria-label="Email address">
+                        </div>
+                        <button type="submit" class="btn btn--primary btn--full">
+                            Subscribe Free
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                    </form>
+                    <p class="subscribe__success" id="subscribeSuccess" hidden>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        Welcome aboard! Check your inbox for a confirmation email.
+                    </p>
+                    <p class="subscribe__privacy">No spam, ever. Read our <a href="#">Privacy Policy</a>.</p>
+                </div>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary">Send Inquiry</button>
-      </form>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- ============================================================
-     FOOTER
-     ============================================================ -->
-<footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <a href="#home" class="nav-logo">Maison<span>Noir</span></a>
-        <p>Representing the world's most exceptional properties with discretion, expertise, and an unwavering commitment to excellence.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Explore</h4>
-        <ul>
-          <li><a href="#home">Home</a></li>
-          <li><a href="#listings">Listings</a></li>
-          <li><a href="#about">About Us</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Properties</h4>
-        <ul>
-          <li><a href="#listings">Luxury Villas</a></li>
-          <li><a href="#listings">City Apartments</a></li>
-          <li><a href="#listings">Estates</a></li>
-          <li><a href="#listings">Private Islands</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Legal</h4>
-        <ul>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Service</a></li>
-          <li><a href="#">Cookie Policy</a></li>
-          <li><a href="#">Fair Housing</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2025 Maison Noir. All rights reserved.</p>
-      <div class="footer-social">
-        <a href="#" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zM17.5 6.5h.01"/></svg></a>
-        <a href="#" aria-label="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6zM2 9h4v12H2zM4 6a2 2 0 100-4 2 2 0 000 4z"/></svg></a>
-        <a href="#" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
-      </div>
-    </div>
-  </div>
-</footer>
-
-<!-- ============================================================
-     JAVASCRIPT
-     ============================================================ -->
-<script>
-/* ============================================================
-   PROPERTY DATA — Inline JSON
-   In production, this could be fetched from data/properties.json
-   ============================================================ */
-const PROPERTIES = [
-  {
-    id: 1,
-    category: "Luxury Villas",
-    title: "Villa Serenita",
-    price: 4250000,
-    beds: 5,
-    baths: 4,
-    sqft: 6200,
-    location: "Beverly Hills, CA",
-    image: "https://picsum.photos/seed/villa-serenita/800/600",
-    featured: true
-  },
-  {
-    id: 2,
-    category: "Luxury Villas",
-    title: "Maison du Lac",
-    price: 3890000,
-    beds: 4,
-    baths: 5,
-    sqft: 5400,
-    location: "Lake Como, IT",
-    image: "https://picsum.photos/seed/maison-lac/800/600",
-    featured: false
-  },
-  {
-    id: 3,
-    category: "Luxury Villas",
-    title: "Casa Marbella",
-    price: 5600000,
-    beds: 6,
-    baths: 6,
-    sqft: 7800,
-    location: "Marbella, ES",
-    image: "https://picsum.photos/seed/casa-marbella/800/600",
-    featured: true
-  },
-  {
-    id: 4,
-    category: "City Apartments",
-    title: "The Penthouse",
-    price: 2950000,
-    beds: 3,
-    baths: 3,
-    sqft: 3200,
-    location: "Manhattan, NY",
-    image: "https://picsum.photos/seed/penthouse-nyc/800/600",
-    featured: true
-  },
-  {
-    id: 5,
-    category: "City Apartments",
-    title: "Skyline Residence",
-    price: 1850000,
-    beds: 2,
-    baths: 2,
-    sqft: 2100,
-    location: "Chicago, IL",
-    image: "https://picsum.photos/seed/skyline-chi/800/600",
-    featured: false
-  },
-  {
-    id: 6,
-    category: "City Apartments",
-    title: "Tower Suite 47",
-    price: 3400000,
-    beds: 3,
-    baths: 4,
-    sqft: 3800,
-    location: "Miami, FL",
-    image: "https://picsum.photos/seed/tower-miami/800/600",
-    featured: false
-  },
-  {
-    id: 7,
-    category: "Estates",
-    title: "Blackwood Manor",
-    price: 8900000,
-    beds: 8,
-    baths: 9,
-    sqft: 12400,
-    location: "Greenwich, CT",
-    image: "https://picsum.photos/seed/blackwood-manor/800/600",
-    featured: true
-  },
-  {
-    id: 8,
-    category: "Estates",
-    title: "Highland Estate",
-    price: 7200000,
-    beds: 7,
-    baths: 7,
-    sqft: 9800,
-    location: "Aspen, CO",
-    image: "https://picsum.photos/seed/highland-aspen/800/600",
-    featured: false
-  },
-  {
-    id: 9,
-    category: "Estates",
-    title: "Belvedere Court",
-    price: 11500000,
-    beds: 9,
-    baths: 10,
-    sqft: 15000,
-    location: "Hamptons, NY",
-    image: "https://picsum.photos/seed/belvedere-hamptons/800/600",
-    featured: true
-  }
-];
-
-/* ============================================================
-   FORMAT PRICE — Converts number to currency string
-   ============================================================ */
-function formatPrice(price) {
-  if (price >= 1000000) {
-    return '$' + (price / 1000000).toFixed(2).replace(/\.00$/, '') + 'M';
-  }
-  return '$' + price.toLocaleString('en-US');
-}
-
-/* ============================================================
-   RENDER PROPERTY CARDS
-   ============================================================ */
-function renderProperties(filter = 'all') {
-  const grid = document.getElementById('propertyGrid');
-  const filtered = filter === 'all'
-    ? PROPERTIES
-    : PROPERTIES.filter(p => p.category === filter);
-
-  grid.innerHTML = filtered.map(prop => `
-    <article class="property-card reveal" data-id="${prop.id}">
-      <div class="property-image">
-        <img src="${prop.image}" alt="${prop.title}" loading="lazy" />
-        ${prop.featured
-          ? '<span class="property-badge featured">Featured</span>'
-          : `<span class="property-badge">${prop.category}</span>`
-        }
-        <button class="property-favorite" aria-label="Save property" data-id="${prop.id}">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
-          </svg>
-        </button>
-      </div>
-      <div class="property-body">
-        <div class="property-price">${formatPrice(prop.price)}</div>
-        <div class="property-title">${prop.title} — ${prop.location}</div>
-        <div class="property-meta">
-          <div class="property-meta-item">
-            <svg class="property-meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M2 4v16M22 4v16M2 8h20M2 16h20M6 4v4M18 4v4M6 16v4M18 16v4"/>
-            </svg>
-            <strong>${prop.beds}</strong> Beds
-          </div>
-          <div class="property-meta-item">
-            <svg class="property-meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M9 6L6.5 3.5a1.5 1.5 0 00-1 0L3 6v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2H9zM7 17v2M17 17v2"/>
-            </svg>
-            <strong>${prop.baths}</strong> Baths
-          </div>
-          <div class="property-meta-item">
-            <svg class="property-meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M3 3h18v18H3zM3 9h18M9 21V9"/>
-            </svg>
-            <strong>${prop.sqft.toLocaleString()}</strong> sqft
-          </div>
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="footer__container">
+            <div class="footer__top">
+                <a href="#" class="footer__logo">Inkwell<span class="footer__logo-dot">.</span></a>
+                <p class="footer__tagline">Insights that inspire — every Sunday.</p>
+                <div class="footer__social">
+                    <a href="#" class="footer__social-link" aria-label="Twitter / X">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    </a>
+                    <a href="#" class="footer__social-link" aria-label="GitHub">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                    </a>
+                    <a href="#" class="footer__social-link" aria-label="LinkedIn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    </a>
+                    <a href="#" class="footer__social-link" aria-label="RSS Feed">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p class="footer__copyright">&copy; 2025 Inkwell. All rights reserved.</p>
+                <div class="footer__links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact</a>
+                </div>
+            </div>
         </div>
-      </div>
-    </article>
-  `).join('');
+    </footer>
 
-  // Re-observe newly created cards for reveal animation
-  observeReveal();
-}
-
-/* ============================================================
-   FILTER TABS — Category filtering
-   ============================================================ */
-function initFilterTabs() {
-  const tabs = document.querySelectorAll('.filter-tab');
-  tabs.forEach(tab => {
-    // Add count to each tab
-    const filter = tab.dataset.filter;
-    const count = filter === 'all'
-      ? PROPERTIES.length
-      : PROPERTIES.filter(p => p.category === filter).length;
-    tab.querySelector('.count').textContent = `(${count})`;
-
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      renderProperties(filter);
-    });
-  });
-}
-
-/* ============================================================
-   FAVORITE TOGGLE
-   ============================================================ */
-document.addEventListener('click', (e) => {
-  const fav = e.target.closest('.property-favorite');
-  if (fav) {
-    e.stopPropagation();
-    fav.classList.toggle('active');
-  }
-});
-
-/* ============================================================
-   NAVIGATION — Scroll behavior + mobile toggle
-   ============================================================ */
-function initNav() {
-  const nav = document.getElementById('nav');
-  const navToggle = document.getElementById('navToggle');
-  const navLinks = document.getElementById('navLinks');
-
-  // Add scrolled class on scroll
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 60) {
-      nav.classList.add('scrolled');
-    } else {
-      nav.classList.remove('scrolled');
-    }
-  });
-
-  // Mobile menu toggle
-  navToggle.addEventListener('click', () => {
-    navToggle.classList.toggle('active');
-    navLinks.classList.toggle('active');
-  });
-
-  // Close mobile menu on link click
-  navLinks.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      navToggle.classList.remove('active');
-      navLinks.classList.remove('active');
-    });
-  });
-}
-
-/* ============================================================
-   SCROLL REVEAL — Intersection Observer
-   ============================================================ */
-function observeReveal() {
-  const reveals = document.querySelectorAll('.reveal:not(.visible)');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
-
-  reveals.forEach(el => observer.observe(el));
-}
-
-/* ============================================================
-   CONTACT FORM — Submit handler (demo)
-   ============================================================ */
-function initContactForm() {
-  const form = document.getElementById('contactForm');
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const btn = form.querySelector('button[type="submit"]');
-    const originalText = btn.textContent;
-    btn.textContent = 'Sending...';
-    btn.disabled = true;
-
-    setTimeout(() => {
-      btn.textContent = '✓ Inquiry Sent';
-      btn.style.background = '#2D3436';
-      form.reset();
-
-      setTimeout(() => {
-        btn.textContent = originalText;
-        btn.style.background = '';
-        btn.disabled = false;
-      }, 2500);
-    }, 1200);
-  });
-}
-
-/* ============================================================
-   INIT — Run on DOM ready
-   ============================================================ */
-document.addEventListener('DOMContentLoaded', () => {
-  renderProperties();
-  initFilterTabs();
-  initNav();
-  initContactForm();
-  observeReveal();
-});
-</script>
-
+    <script src="script.js"></script>
 </body>
 </html>
